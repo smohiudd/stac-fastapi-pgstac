@@ -51,7 +51,7 @@ class BaseLinks:
     @property
     def url(self):
         """Get the current request url."""
-        return str(self.request.url)
+        return urljoin(self.base_url, self.request.url.path)
 
     def resolve(self, url):
         """Resolve url to the current request url."""
@@ -123,7 +123,7 @@ class PagingLinks(BaseLinks):
         if self.next is not None:
             method = self.request.method
             if method == "GET":
-                href = merge_params(urljoin(self.base_url,self.request.url.path), {"token": f"next:{self.next}"})
+                href = merge_params(self.url, {"token": f"next:{self.next}"})
                 link = dict(
                     rel=Relations.next.value,
                     type=MimeTypes.geojson.value,
@@ -147,7 +147,7 @@ class PagingLinks(BaseLinks):
         if self.prev is not None:
             method = self.request.method
             if method == "GET":
-                href = merge_params(urljoin(self.base_url,self.request.url.path), {"token": f"prev:{self.prev}"})
+                href = merge_params(self.url, {"token": f"prev:{self.prev}"})
                 return dict(
                     rel=Relations.previous.value,
                     type=MimeTypes.geojson.value,
